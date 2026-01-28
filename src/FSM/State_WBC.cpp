@@ -198,16 +198,23 @@ void State_WBC::_observations_compute()
 
     for (int i = 0; i < _mimic_obs_predictive_horizon; i++)
     {
+        
         int idx = _refer_idx + i * _frame_interval;
         int last_idx = idx - _frame_interval;
-        if( idx >= _motion_frame_count)
+        if(_pause_flag)
+        {
+            idx = _pause_refer_idx;
+            last_idx = idx - _frame_interval;
+        }
+        if (idx >= _motion_frame_count)
             idx = _motion_frame_count - 1;
         else if (idx <= 1)
-                idx = 1;
+            idx = 1;
         if (last_idx >= _motion_frame_count)
             last_idx = _motion_frame_count - 1;
         else if (last_idx <= 1)
             last_idx = 1;
+
         cur_refer_anchor_pos = get_pos(idx, _anchor_idx);
         cur_refer_dof_pos = get_dof_pos(idx);
         cur_refer_dof_vel = get_dof_vel(idx);
@@ -255,6 +262,8 @@ void State_WBC::_observations_compute()
     if (anchor_proj_gravity_error > _anchor_terminate_thresh)
     {
         _terminate_flag = true;
+        std::cout << "current _anchor_terminate_thresh: " << _anchor_terminate_thresh << std::endl;
+        std::cout << "[Warning] Large anchor projected gravity error: " << anchor_proj_gravity_error << std::endl;
     }
 
     this->_observation.clear();
@@ -329,6 +338,7 @@ void State_WBC::enter()
     _pause_flag = false;
     _terminate_flag = false;
     _refer_idx = _enter_refer_idx;
+    _last_refer_idx = _refer_idx;
     for (int i = 0; i < NUM_DOF; i++)
     {
         _lowCmd->motorCmd[i].mode = 10;
@@ -387,8 +397,6 @@ FSMStateName State_WBC::checkChange()
     }
     else if (_terminate_flag)
     {
-        _pause_flag = false;
-        std::cout << std::endl << "[Warning] Large projected gravity error" << std::endl;
         return FSMStateName::PASSIVE;
     }
     else if(_lowState->userCmd == UserCommand::R2_A){ 

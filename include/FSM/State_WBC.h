@@ -113,7 +113,7 @@ private:
     bool _pause_flag = false;
     int _enter_refer_idx = 0; // reference frame index when entering state
     int _pause_refer_idx = 350; // reference frame index when paused
-    unsigned int _motion_frame_count = 0;
+    int _motion_frame_count = 0;
     const std::vector<float> _gravity_vec = {0.0f, 0.0f, -1.0f}; 
     float _anchor_terminate_thresh = 0.5f; 
     bool _terminate_flag = false; 
