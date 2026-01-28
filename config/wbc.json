@@ -1,0 +1,8 @@
+{
+    "model_path": "model/umt/lafan1_0128_1.onnx",
+    "folder_path": "motion_data/lafan1/dance12_binary",
+    "enter_idx": 350,
+    "pause_idx": 350,
+    "safe_projgravity_threshold": 2.5,
+    "verbose_idx": true
+}

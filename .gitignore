@@ -1,0 +1,53 @@
+# Build directories
+build/
+cmake-build-*/
+
+# Compiled Object files
+*.o
+*.obj
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Compiled Static libraries
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+wbc_fsm
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+*.cmake
+!CMakeLists.txt
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# ONNX Runtime (if you want to exclude, otherwise remove these lines)
+# onnxruntime-linux-*/
+
+# Model files (optional - uncomment if models are too large)
+# model/**/*.onnx
+
+# Binary data files (optional - uncomment if data is too large)
+# motion_data/**/*.bin
