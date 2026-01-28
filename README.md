@@ -7,7 +7,7 @@ English | [中文](README_zh.md)
 ## Features
 
 - **State Machine Control**: Multiple FSM states including Passive, Loco (locomotion), and WBC (whole-body control)
-- **Motion Tracking**: Real-time tracking of LAFAN1 motion dataset retargeted for Unitree humanoid robots
+- **Motion Tracking**: Real-time tracking of LAFAN1 motion dataset retargeted for Unitree G1 humanoid robots
 - **ONNX Runtime**: Fast inference with ONNX models
 - **Configurable**: JSON-based configuration for easy parameter tuning
 
@@ -92,7 +92,20 @@ Example configuration (`wbc.json`):
    make -j4
    ```
 
-5. Start the simulation:
+5. Edit unitree_mujoco/config.yaml and Start the simulation:
+    ```yaml
+    robot: "g1"  # Robot name, "go2", "b2", "b2w", "h1", "go2w", "g1"
+    robot_scene: "scene_29dof.xml" # Robot scene, /unitree_robots/[robot]/scene.xml 
+    domain_id: 1  # Domain id
+    interface: "lo" # Interface 
+    use_joystick: 1 # Simulate Unitree WirelessController using a gamepad
+    joystick_type: "xbox" # support "xbox" and "switch" gamepad layout
+    joystick_device: "/dev/input/js0" # Device path
+    joystick_bits: 16 # Some game controllers may only have 8-bit accuracy
+    print_scene_information: 1 # Print link, joint and sensors information of robot
+    enable_elastic_band: 1 # Virtual spring band, used for lifting h1
+    ```
+
    ```bash
    cd simulate/build
    ./unitree_mujoco
@@ -130,6 +143,25 @@ Example configuration (`wbc.json`):
    ./wbc_fsm
    ```
 
+## Controls
+
+### Controller Commands
+
+- **R1**: Resume WBC state (when paused)
+- **R2**: Pause WBC state
+- **R2+A**: Switch to Loco mode
+- **L2+B**: Switch to Passive mode
+- **SELECT**: Exit program
+
+### Operation Procedure
+
+1. After starting the program, the robot enters **Damping Protection Mode**
+2. Press **START** to enter position control mode
+3. Suspend the robot (In simulation, `enable_elastic_band` is enabled by default. Press keyboard **9** to release the band, press again to re-suspend. Press **8** to lower, **7** to raise)
+4. Press **R2+A** on the controller to enter Loco Mode, then release the suspension band
+5. Press **R1+Up** on the controller to enter WBC (Whole-Body Control) Mode
+   - Press **R2** to pause the motion
+   - Press **R1** to resume the motion
 
 ## Project Structure
 
@@ -151,14 +183,6 @@ controller/
 ├── motion_data/     # Motion reference data
 └── CMakeLists.txt
 ```
-
-## Controls
-
-- **R1**: Resume WBC state (when paused)
-- **R2**: Pause WBC state
-- **R2+A**: Switch to Loco mode
-- **L2+B**: Switch to Passive mode
-- **SELECT**: Exit program
 
 ## License
 

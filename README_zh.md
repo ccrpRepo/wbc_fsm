@@ -6,10 +6,10 @@
 
 ## 功能特性
 
-- **状态机控制**：包含 Passive（被动）、Loco（运动）和 WBC（全身控制）等多种 FSM 状态
-- **动作跟踪**：实时跟踪重定向到 Unitree 人形机器人的 LAFAN1 动作数据集
+- **状态机控制**：包含 Passive（阻尼保护）、Loco（行走）和 WBC（全身控制）等多种 FSM 状态
+- **动作跟踪**：实时跟踪重定向到 Unitree G1 人形机器人的 LAFAN1 动作数据集
 - **ONNX Runtime**：使用 ONNX 模型进行快速推理
-- **可配置**：基于 JSON 的配置系统，便于参数调整
+- **可配置**：基于 JSON 的配置系统，便于模式切换和参数调整
 
 ## 环境要求
 
@@ -55,8 +55,8 @@ make -j4
 配置文件位于 `config/` 目录：
 - `wbc.json`：WBC 状态配置
 - `loco.json`：运动状态配置
-- `fixedpose.json`：固定站立状态配置
-- `passive.json`：被动状态配置
+- `fixedpose.json`：固定关节状态配置
+- `passive.json`：阻尼状态配置
 
 配置示例（`wbc.json`）：
 ```json
@@ -92,7 +92,19 @@ make -j4
    make -j4
    ```
 
-5. 启动仿真：
+5. 修改unitree_mujoco/config.yaml配置，并启动仿真：
+    ```yaml
+    robot: "g1"  # Robot name, "go2", "b2", "b2w", "h1", "go2w", "g1"
+    robot_scene: "scene_29dof.xml" # Robot scene, /unitree_robots/[robot]/scene.xml 
+    domain_id: 1  # Domain id
+    interface: "lo" # Interface 
+    use_joystick: 1 # Simulate Unitree WirelessController using a gamepad
+    joystick_type: "xbox" # support "xbox" and "switch" gamepad layout
+    joystick_device: "/dev/input/js0" # Device path
+    joystick_bits: 16 # Some game controllers may only have 8-bit accuracy
+    print_scene_information: 1 # Print link, joint and sensors information of robot
+    enable_elastic_band: 1 # Virtual spring band, used for lifting h1
+    ```
    ```bash
    cd simulate/build
    ./unitree_mujoco
@@ -153,11 +165,23 @@ controller/
 
 ## 控制说明
 
+### 操作指令
+
 - **R1**：恢复 WBC 状态（暂停时）
 - **R2**：暂停 WBC 状态
 - **R2+A**：切换到 Loco 模式
 - **L2+B**：切换到 Passive 模式
 - **SELECT**：退出程序
+
+### 操作步骤
+
+1. 运行程序后，机器人处于**阻尼保护模式**
+2. 按 **START** 键进入位控模式
+3. 将机器人悬吊起来（在仿真中默认启用 `enable_elastic_band`，按键盘数字键 **9** 可以松开绑带，再次按下可重新悬吊，数字键 **8** 下放，数字键 **7** 上拉）
+4. 按遥控器上的 **R2+A** 进入 Loco Mode，此时松开吊绳
+5. 按遥控器上的 **R1+Up** 进入全身控制模式（WBC Mode）
+   - 按 **R2** 可以暂停动作
+   - 按 **R1** 可以继续动作
 
 ## 许可证
 
