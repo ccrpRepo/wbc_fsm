@@ -13,6 +13,7 @@ find_package(Eigen3 REQUIRED)
 find_package(unitree_sdk2 REQUIRED)
 
 set(ONNXRUNTIME_ROOT ${PROJECT_SOURCE_DIR}/onnxruntime-linux-x64-1.22.0)
+# set(ONNXRUNTIME_ROOT ${PROJECT_SOURCE_DIR}/onnxruntime-linux-aarch64-1.22.0)
 
 include_directories(
     include
@@ -38,13 +39,6 @@ add_executable(wbc_fsm src/main.cpp ${SRC_LIST})
 target_compile_definitions(wbc_fsm PRIVATE 
     PROJECT_ROOT_DIR="${PROJECT_SOURCE_DIR}"
 )
-
-if(OPENSSL_FOUND)
-    target_link_libraries(wbc_fsm PRIVATE
-        OpenSSL::SSL 
-        OpenSSL::Crypto
-    )
-endif()
 
 target_link_libraries(wbc_fsm PRIVATE
     ${ONNXRUNTIME_ROOT}/lib/libonnxruntime.so.1.22.0

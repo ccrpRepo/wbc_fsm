@@ -1,11 +1,11 @@
 # WBC_Deploy Controller
 
-Whole-Body Control deployment system for humanoid robots using reinforcement learning and motion mimicking.
+Whole-Body Control deployment system for humanoid robots using reinforcement learning and motion tracking.
 
 ## Features
 
 - **State Machine Control**: Multiple FSM states including Passive, Loco (locomotion), and WBC (whole-body control)
-- **Motion Mimicking**: Real-time motion tracking using UMT (Universal Motion Transformer)
+- **Motion Tracking**: Real-time tracking of LAFAN1 motion dataset retargeted for Unitree humanoid robots
 - **ONNX Runtime**: Fast inference with ONNX models
 - **Configurable**: JSON-based configuration for easy parameter tuning
 
@@ -13,14 +13,13 @@ Whole-Body Control deployment system for humanoid robots using reinforcement lea
 
 - CMake >= 3.14
 - C++17 compiler
-- CUDA (optional, for GPU acceleration)
+- CUDA
 - Required libraries:
   - unitree_sdk2
   - **ONNX Runtime 1.22.0** (see installation below)
   - Eigen3
   - nlohmann_json >= 3.7.3
-  - OpenSSL
-  - Boost (optional)
+  - Boost
 
 ### Installing ONNX Runtime
 
@@ -105,8 +104,14 @@ controller/
 
 ## License
 
-Copyright (c) 2020-2023, Unitree Robotics.Co.Ltd. All rights reserved.
+This project is based on Unitree Robotics SDK2 framework.
+
+Original framework: Copyright (c) 2020-2023, Unitree Robotics.Co.Ltd. All rights reserved.
+
+Modified and extended by [ccrpRepo / ZSTU Robotics] © 2026
 
 ## Acknowledgments
 
-Based on Unitree Robotics SDK and control framework.
+- Based on Unitree Robotics SDK2
+- Motion data from LAFAN1 dataset
+- ONNX Runtime for model inference
