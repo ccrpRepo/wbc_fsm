@@ -2,6 +2,8 @@
 
 Whole-Body Control deployment system for humanoid robots using reinforcement learning and motion tracking.
 
+English | [中文](README_zh.md)
+
 ## Features
 
 - **State Machine Control**: Multiple FSM states including Passive, Loco (locomotion), and WBC (whole-body control)
@@ -25,14 +27,14 @@ Whole-Body Control deployment system for humanoid robots using reinforcement lea
 
 Download and extract ONNX Runtime 1.22.0 to the `controller/` directory:
 
-**For x64:**
+**For x64 (Simulation):**
 ```bash
 cd controller/
 wget https://github.com/microsoft/onnxruntime/releases/download/v1.22.0/onnxruntime-linux-x64-1.22.0.tgz
 tar -xzf onnxruntime-linux-x64-1.22.0.tgz
 ```
 
-**For aarch64:**
+**For aarch64 (Real Robot):**
 ```bash
 cd controller/
 wget https://github.com/microsoft/onnxruntime/releases/download/v1.22.0/onnxruntime-linux-aarch64-1.22.0.tgz
@@ -51,14 +53,15 @@ make -j4
 ## Configuration
 
 Configuration files are located in `config/`:
-- `umt.json`: WBC state configuration
+- `wbc.json`: WBC state configuration
 - `loco.json`: Locomotion state configuration
-- `config_rl.json`: RL state configuration
+- `fixedpose.json`: FixedStand state configuration
+- `passive.json`: Passive state configuration
 
-Example configuration (`umt.json`):
+Example configuration (`wbc.json`):
 ```json
 {
-    "model_path": "model/umt/lafan1_0128_1.onnx",
+    "model_path": "model/wbc/lafan1_0128_1.onnx",
     "folder_path": "motion_data/lafan1/dance12_binary",
     "enter_idx": 0,
     "pause_idx": 350,
@@ -68,10 +71,65 @@ Example configuration (`umt.json`):
 
 ## Running
 
-```bash
-cd build
-./wbc_fsm
-```
+### Deploy on Mujoco Simulation
+
+1. Install Unitree Mujoco following the instructions at https://github.com/unitreerobotics/unitree_mujoco
+
+2. Set the ONNX Runtime path in `CMakeLists.txt`:
+   ```cmake
+   set(ONNXRUNTIME_ROOT ${PROJECT_SOURCE_DIR}/onnxruntime-linux-x64-1.22.0)
+   ```
+
+3. Configure the network interface in `controller/src/interface/IOSDK.cpp`:
+   ```cpp
+   ChannelFactory::Instance()->Init(1, "lo"); // lo for simulation
+   ```
+
+4. Build the project:
+   ```bash
+   cd build
+   cmake ..
+   make -j4
+   ```
+
+5. Start the simulation:
+   ```bash
+   cd simulate/build
+   ./unitree_mujoco
+   ```
+
+6. Run the controller (in a new terminal):
+   ```bash
+   cd controller/build
+   ./wbc_fsm
+   ```
+
+### Deploy on Real Robot
+
+1. Copy this project to `/home/unitree` on the Unitree G1 robot's PC2 computer
+
+2. Set the ONNX Runtime path in `CMakeLists.txt`:
+   ```cmake
+   set(ONNXRUNTIME_ROOT ${PROJECT_SOURCE_DIR}/onnxruntime-linux-aarch64-1.22.0)
+   ```
+
+3. Configure the network interface in `controller/src/interface/IOSDK.cpp`:
+   ```cpp
+   ChannelFactory::Instance()->Init(0, "eth0"); // eth0 for real robot
+   ```
+
+4. Build the project:
+   ```bash
+   cd build
+   cmake ..
+   make -j4
+   ```
+
+5. Run the controller:
+   ```bash
+   ./wbc_fsm
+   ```
+
 
 ## Project Structure
 
