@@ -16,11 +16,29 @@ Whole-Body Control deployment system for humanoid robots using reinforcement lea
 - CUDA (optional, for GPU acceleration)
 - Required libraries:
   - unitree_sdk2
-  - ONNX Runtime 1.22.0
+  - **ONNX Runtime 1.22.0** (see installation below)
   - Eigen3
   - nlohmann_json >= 3.7.3
   - OpenSSL
   - Boost (optional)
+
+### Installing ONNX Runtime
+
+Download and extract ONNX Runtime 1.22.0 to the `controller/` directory:
+
+**For x64:**
+```bash
+cd controller/
+wget https://github.com/microsoft/onnxruntime/releases/download/v1.22.0/onnxruntime-linux-x64-1.22.0.tgz
+tar -xzf onnxruntime-linux-x64-1.22.0.tgz
+```
+
+**For aarch64:**
+```bash
+cd controller/
+wget https://github.com/microsoft/onnxruntime/releases/download/v1.22.0/onnxruntime-linux-aarch64-1.22.0.tgz
+tar -xzf onnxruntime-linux-aarch64-1.22.0.tgz
+```
 
 ## Building
 
