@@ -148,7 +148,8 @@ Example configuration (`wbc.json`):
 ### Controller Commands
 
 - **R1**: Resume WBC state (when paused)
-- **R2**: Pause WBC state
+- **R2**: Pause WBC state (at specified frame)
+- **L2**: Pause WBC state (at current frame)
 - **R2+A**: Switch to Loco mode
 - **L2+B**: Switch to Passive mode
 - **SELECT**: Exit program
