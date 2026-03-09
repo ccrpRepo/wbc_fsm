@@ -1,5 +1,5 @@
-#ifndef CHAMDANCE_H
-#define CHAMDANCE_H
+#ifndef WBC_H
+#define WBC_H
 
 #include "FSM/FSMState.h"
 #include "common/read_traj.h"
@@ -101,7 +101,7 @@ private:
     bool _wbc_pause = false;
     float _motion_len;
     std::vector<float> _target_dof_pos;
-    const int _mimic_obs_predictive_horizon = 10; 
+    const int _mimic_obs_predictive_horizon = 1; 
     const int _frame_interval = 5; 
     const int _actor_state_history_length = 4;
     const int _robot_state_dim = 93; 
@@ -111,12 +111,14 @@ private:
     const int _anchor_idx = 0; // reference anchor index torso_link: 9 root: 0
     const int _waist_yrp_idx[3] = {12, 13, 14}; // reference trajectory waist rpy indices
     bool _pause_flag = false;
-    int _enter_refer_idx = 0; // reference frame index when entering state
+    int _start_refer_idx = 0;   // reference frame index when entering state
     int _pause_refer_idx = 350; // reference frame index when paused
+    int _end_refer_idx = -1; // reference frame index to end WBC state
     int _motion_frame_count = 0;
     const std::vector<float> _gravity_vec = {0.0f, 0.0f, -1.0f}; 
     float _anchor_terminate_thresh = 0.5f; 
     bool _terminate_flag = false; 
+    bool _pause_curr_flag = false;
     
     std::vector<float> _robot_state_obs_buf = std::vector<float>(_robot_state_dim * _actor_state_history_length, 0.0f);
 
@@ -137,17 +139,17 @@ private:
                                       20, 27,
                                       21, 28}; // motor order
 
-    const double dof_Kps[NUM_DOF] = {STIFFNESS_7520_14, STIFFNESS_7520_22, STIFFNESS_7520_14, STIFFNESS_7520_22, 2.0 * STIFFNESS_5020, 2.0 * STIFFNESS_5020,
-                                STIFFNESS_7520_14, STIFFNESS_7520_22, STIFFNESS_7520_14, STIFFNESS_7520_22, 2.0 * STIFFNESS_5020, 2.0 * STIFFNESS_5020,
+    const double dof_Kps[NUM_DOF] = {STIFFNESS_7520_22, STIFFNESS_7520_22, STIFFNESS_7520_14, STIFFNESS_7520_22, 2.0 * STIFFNESS_5020, 2.0 * STIFFNESS_5020,
+                                STIFFNESS_7520_22, STIFFNESS_7520_22, STIFFNESS_7520_14, STIFFNESS_7520_22, 2.0 * STIFFNESS_5020, 2.0 * STIFFNESS_5020,
                                 STIFFNESS_7520_14, 2.0 * STIFFNESS_5020, 2.0 * STIFFNESS_5020,
-                                STIFFNESS_5020, STIFFNESS_5020, STIFFNESS_5020, STIFFNESS_5020, STIFFNESS_5020, STIFFNESS_4010, STIFFNESS_4010,
-                                STIFFNESS_5020, STIFFNESS_5020, STIFFNESS_5020, STIFFNESS_5020, STIFFNESS_5020, STIFFNESS_4010, STIFFNESS_4010,}; // 电机Kp参数
+                                STIFFNESS_5020, STIFFNESS_5020, STIFFNESS_5020, STIFFNESS_5020, STIFFNESS_5020, STIFFNESS_5010_16, STIFFNESS_5010_16,
+                                STIFFNESS_5020, STIFFNESS_5020, STIFFNESS_5020, STIFFNESS_5020, STIFFNESS_5020, STIFFNESS_5010_16, STIFFNESS_5010_16,}; // 电机Kp参数
 
-    const double dof_Kds[NUM_DOF] = {DAMPING_7520_14, DAMPING_7520_22, DAMPING_7520_14, DAMPING_7520_22, 2.0 * DAMPING_5020, 2.0 * DAMPING_5020,
-                                DAMPING_7520_14, DAMPING_7520_22, DAMPING_7520_14, DAMPING_7520_22, 2.0 * DAMPING_5020, 2.0 * DAMPING_5020,
+    const double dof_Kds[NUM_DOF] = {DAMPING_7520_22, DAMPING_7520_22, DAMPING_7520_14, DAMPING_7520_22, 2.0 * DAMPING_5020, 2.0 * DAMPING_5020,
+                                DAMPING_7520_22, DAMPING_7520_22, DAMPING_7520_14, DAMPING_7520_22, 2.0 * DAMPING_5020, 2.0 * DAMPING_5020,
                                 DAMPING_7520_14, 2.0 * DAMPING_5020, 2.0 * DAMPING_5020,
-                                DAMPING_5020, DAMPING_5020, DAMPING_5020, DAMPING_5020, DAMPING_5020, DAMPING_4010, DAMPING_4010,
-                                DAMPING_5020, DAMPING_5020, DAMPING_5020, DAMPING_5020, DAMPING_5020, DAMPING_4010, DAMPING_4010,}; // 电机Kd参数
+                                DAMPING_5020, DAMPING_5020, DAMPING_5020, DAMPING_5020, DAMPING_5020, DAMPING_5010_16, DAMPING_5010_16,
+                                DAMPING_5020, DAMPING_5020, DAMPING_5020, DAMPING_5020, DAMPING_5020, DAMPING_5010_16, DAMPING_5010_16,}; // 电机Kd参数
 };
 
-#endif // CHAMDANCE_H
+#endif // WBC_H

@@ -64,7 +64,7 @@ FSMStateName State_FixedStand::checkChange(){
     }
     else if (_lowState->userCmd == UserCommand::R2_A)
     {
-        return FSMStateName::LOCO;
+        return FSMStateName::AMP;
     }
     else if(_lowState->userCmd == UserCommand::SELECT){
         throw std::runtime_error("exit..");

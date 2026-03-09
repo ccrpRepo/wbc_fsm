@@ -7,5 +7,5 @@
     "vy_limit_max": 0.4,
     "wyaw_limit_min": -1.0,
     "wyaw_limit_max": 1.0,
-    "cmd_smoothes": 0.05
+    "cmd_smoothes": 0.95
 }

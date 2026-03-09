@@ -8,6 +8,7 @@ FSM::FSM(CtrlComponents *ctrlComp)
     _stateList.passive = new State_Passive(_ctrlComp);
     _stateList.fixedStand = new State_FixedStand(_ctrlComp);
     _stateList.loco = new State_Loco(_ctrlComp);
+    _stateList.amp = new State_AMP(_ctrlComp);
     _stateList.wbc = new State_WBC(_ctrlComp);
     initialize(); 
 }
@@ -17,7 +18,7 @@ FSM::~FSM(){
 }
 
 void FSM::initialize(){
-    _currentState = _stateList.passive; 
+    _currentState = _stateList.passive;
     _currentState -> enter();  
     _nextState = _currentState;
     _mode = FSMMode::NORMAL;  
@@ -72,6 +73,8 @@ FSMState* FSM::getNextState(FSMStateName stateName){
         return _stateList.loco;
     case FSMStateName::WBC:
         return _stateList.wbc;
+    case FSMStateName::AMP:
+        return _stateList.amp;
     default:
         return _stateList.invalid;
         break;

@@ -158,8 +158,9 @@ Example configuration (`wbc.json`):
 1. After starting the program, the robot enters **Damping Protection Mode**
 2. Press **START** to enter position control mode
 3. Suspend the robot (In simulation, `enable_elastic_band` is enabled by default. Press keyboard **9** to release the band, press again to re-suspend. Press **8** to lower, **7** to raise)
-4. Press **R2+A** on the controller to enter Loco Mode, then release the suspension band
-5. Press **R1+Up** on the controller to enter WBC (Whole-Body Control) Mode
+4. Press **R2+A** on the controller to enter Loco(AMP) Mode, then release the suspension band
+5. Press **R2+B** on the controller to enter Loco(RL) Mode
+6. Press **R1+Up** on the controller to enter WBC (Whole-Body Control) Mode
    - Press **R2** to pause the motion
    - Press **R1** to resume the motion
 

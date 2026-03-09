@@ -144,6 +144,10 @@ void IOSDK::LowStateHandler(const void *message)
     {
         userCmd_ = UserCommand::R2;
     }
+    if (gamepad_.L2.pressed)
+    {
+        userCmd_ = UserCommand::L2;
+    }
     if(gamepad_.R1.pressed)
     {
         userCmd_ = UserCommand::R1;
@@ -159,6 +163,26 @@ void IOSDK::LowStateHandler(const void *message)
     if (gamepad_.R1.pressed && gamepad_.up.pressed)
     {
         userCmd_ = UserCommand::R1_UP;
+    }
+    if (gamepad_.R1.pressed && gamepad_.left.pressed)
+    {
+        userCmd_ = UserCommand::R1_LEFT;
+    }
+    if (gamepad_.R1.pressed && gamepad_.right.pressed)
+    {
+        userCmd_ = UserCommand::R1_RIGHT;
+    }
+    if (gamepad_.R2.pressed && gamepad_.up.pressed)
+    {
+        userCmd_ = UserCommand::R2_UP;
+    }
+    if (gamepad_.R2.pressed && gamepad_.down.pressed)
+    {
+        userCmd_ = UserCommand::R2_DOWN;
+    }
+    if (gamepad_.R2.pressed && gamepad_.B.pressed)
+    {
+        userCmd_ = UserCommand::R2_B;
     }
 
     userValue_.lx = -gamepad_.lx;

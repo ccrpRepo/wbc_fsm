@@ -99,6 +99,7 @@ namespace ArmatureConstants
     constexpr double ARMATURE_7520_14 = 0.010177520;
     constexpr double ARMATURE_7520_22 = 0.025101925;
     constexpr double ARMATURE_4010 = 0.00425;
+    constexpr double ARMATURE_5010_16 = 0.0021812;
 
     constexpr double NATURAL_FREQ = 10.0 * 2.0 * 3.1415926535; // 10Hz
     constexpr double DAMPING_RATIO = 2.0;
@@ -107,11 +108,13 @@ namespace ArmatureConstants
     constexpr double STIFFNESS_7520_14 = ARMATURE_7520_14 * NATURAL_FREQ * NATURAL_FREQ;
     constexpr double STIFFNESS_7520_22 = ARMATURE_7520_22 * NATURAL_FREQ * NATURAL_FREQ;
     constexpr double STIFFNESS_4010 = ARMATURE_4010 * NATURAL_FREQ * NATURAL_FREQ;
+    constexpr double STIFFNESS_5010_16 = ARMATURE_5010_16 * NATURAL_FREQ * NATURAL_FREQ;
 
     constexpr double DAMPING_5020 = 2.0 * DAMPING_RATIO * ARMATURE_5020 * NATURAL_FREQ;
     constexpr double DAMPING_7520_14 = 2.0 * DAMPING_RATIO * ARMATURE_7520_14 * NATURAL_FREQ;
     constexpr double DAMPING_7520_22 = 2.0 * DAMPING_RATIO * ARMATURE_7520_22 * NATURAL_FREQ;
     constexpr double DAMPING_4010 = 2.0 * DAMPING_RATIO * ARMATURE_4010 * NATURAL_FREQ;
+    constexpr double DAMPING_5010_16 = 2.0 * DAMPING_RATIO * ARMATURE_5010_16 * NATURAL_FREQ;
 
 } // namespace ArmatureConstants
 

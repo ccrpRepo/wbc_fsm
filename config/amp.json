@@ -1,0 +1,13 @@
+{
+    "model_path": "model/loco/amp_0309_1.onnx",
+    "safe_projgravity_threshold": 0.6,
+    "vx_limit_min": -1.5,
+    "vx_limit_max": 3.0,
+    "vx_limit_min_slow": -0.5,
+    "vx_limit_max_slow": 1.0,
+    "vy_limit_min": -0.01,
+    "vy_limit_max": 0.01,
+    "wyaw_limit_min": -1.57,
+    "wyaw_limit_max": 1.57,
+    "cmd_smoothes": 0.95
+}   

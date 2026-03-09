@@ -1,7 +1,8 @@
 {
-    "model_path": "model/wbc/lafan1_0128_4.onnx",
-    "folder_path": "motion_data/lafan1/dance12_binary",
-    "enter_idx": 0,
+    "model_path": "model/wbc/dance12_0207_1.onnx",
+    "motion_path": "motion_data/lafan1/dance12",
+    "start_idx": 0,
+    "end_idx": -1,
     "pause_idx": 350,
-    "safe_projgravity_threshold": 2.05
+    "safe_projgravity_threshold": 0.6
 }
