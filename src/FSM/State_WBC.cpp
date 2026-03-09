@@ -21,10 +21,11 @@ State_WBC::State_WBC(CtrlComponents *ctrlComp)
         json config = json::parse(config_file);
         std::string base_path = std::string(PROJECT_ROOT_DIR) + "/";
         _model_path = base_path + config["model_path"].get<std::string>();
-        _folder_path = base_path + config["folder_path"].get<std::string>();
+        _folder_path = base_path + config["motion_path"].get<std::string>();
         _anchor_terminate_thresh = config["safe_projgravity_threshold"].get<float>();
-        _enter_refer_idx = config["enter_idx"].get<int>();
+        _start_refer_idx = config["start_idx"].get<int>();
         _pause_refer_idx = config["pause_idx"].get<int>();
+        _end_refer_idx = config["end_idx"].get<int>();
         std::cout << "[Config] Model path: " << _model_path << std::endl;
         std::cout << "[Config] Folder path: " << _folder_path << std::endl;
     } catch (const std::exception& e) {
@@ -203,21 +204,29 @@ void State_WBC::_observations_compute()
         int last_idx = idx - _frame_interval;
         if(_pause_flag)
         {
-            idx = _pause_refer_idx;
-            last_idx = idx - _frame_interval;
+            idx = _refer_idx;
+            last_idx = _refer_idx;
         }
-        if (idx >= _motion_frame_count)
-            idx = _motion_frame_count - 1;
+        if (idx >= _end_refer_idx)
+            idx = _end_refer_idx;
         else if (idx <= 1)
             idx = 1;
-        if (last_idx >= _motion_frame_count)
-            last_idx = _motion_frame_count - 1;
+        if (last_idx >= _end_refer_idx)
+            last_idx = _end_refer_idx;
         else if (last_idx <= 1)
             last_idx = 1;
 
         cur_refer_anchor_pos = get_pos(idx, _anchor_idx);
         cur_refer_dof_pos = get_dof_pos(idx);
-        cur_refer_dof_vel = get_dof_vel(idx);
+        if(_pause_flag)
+        {
+            cur_refer_dof_vel = std::vector<float>(NUM_DOF, 0.0f);
+        }
+        else
+        {
+            cur_refer_dof_vel = get_dof_vel(idx);
+        }
+        
         cur_refer_anchor_quat = get_quat(idx, _anchor_idx);
         ref_yaw_quat = yaw_quat(cur_refer_anchor_quat);
         ref_yaw_quat_conj = quat_conjugate(ref_yaw_quat);
@@ -259,6 +268,7 @@ void State_WBC::_observations_compute()
     mimic_obs.insert(mimic_obs.end(), tgt_anchor_ori_b_flat.begin(), tgt_anchor_ori_b_flat.end());
 
     float anchor_proj_gravity_error = std::abs(motion_projected_gravity[2] - projected_gravity[2]);
+    // std::cout << "anchor_proj_gravity_error: " << anchor_proj_gravity_error << std::endl;
     if (anchor_proj_gravity_error > _anchor_terminate_thresh)
     {
         _terminate_flag = true;
@@ -337,8 +347,21 @@ void State_WBC::enter()
 {
     _pause_flag = false;
     _terminate_flag = false;
-    _refer_idx = _enter_refer_idx;
+    _pause_curr_flag = false;
+    _refer_idx = _start_refer_idx;
     _last_refer_idx = _refer_idx;
+    if(_pause_refer_idx<0)
+    {
+        _pause_refer_idx = 0;
+    }
+    if (_end_refer_idx < 0 || _end_refer_idx < _start_refer_idx)
+    {
+        if (_end_refer_idx < _start_refer_idx)
+        {
+            std::cout << "[WARNING]: end_idx is smaller than start_idx, defaulting to the length of the motion." << std::endl;
+        }
+        _end_refer_idx = _motion_frame_count - 1;
+    } 
     for (int i = 0; i < NUM_DOF; i++)
     {
         _lowCmd->motorCmd[i].mode = 10;
@@ -351,7 +374,7 @@ void State_WBC::enter()
         this->_last_targetPos_rl[i] = _lowState->motorState[i].q;
         this->_joint_q[i] = this->_default_dof_pos[i];
     }
-    _init_buffers();
+    // _init_buffers();
 }
 
 void State_WBC::run()
@@ -360,10 +383,12 @@ void State_WBC::run()
         _refer_idx++;
     }
     else{
-        _refer_idx = _pause_refer_idx;
+        if (!_pause_curr_flag)
+            _refer_idx = _pause_refer_idx;
     }
-    if(_refer_idx >= _motion_frame_count){
-        _refer_idx = _motion_frame_count - 1;
+    if (_refer_idx >= _end_refer_idx)
+    {
+        _refer_idx = _end_refer_idx;
     }
     _observations_compute(); 
     _action_compute(); 
@@ -381,7 +406,7 @@ void State_WBC::run()
     }
     _last_refer_idx = _refer_idx;
     std::string pause_string = _pause_flag ? " | Press R1 to resume..." : " | Press R2 to pause...";
-    std::cout << "\r[State_WBC] Running WBC state. Refer idx: " << _refer_idx << "/" << _motion_frame_count - 1 << pause_string  << std::flush;
+    std::cout << "\r[State_WBC] Running WBC state. Refer idx: " << _refer_idx << "/" << _end_refer_idx << pause_string << std::flush;
 }
 
 void State_WBC::exit()
@@ -400,7 +425,7 @@ FSMStateName State_WBC::checkChange()
         return FSMStateName::PASSIVE;
     }
     else if(_lowState->userCmd == UserCommand::R2_A){ 
-        return FSMStateName::LOCO;
+        return FSMStateName::AMP;
     }
     else if (_lowState->userCmd == UserCommand::R2 && !_pause_flag)
     { 
@@ -408,9 +433,18 @@ FSMStateName State_WBC::checkChange()
         std::cout << std::endl <<"WBC Pause" <<std::endl;
         return FSMStateName::WBC;
     }
+    else if (_lowState->userCmd == UserCommand::L2 && !_pause_flag)
+    {
+        _pause_flag = true;
+        _pause_curr_flag = true;
+        std::cout << std::endl
+                  << "WBC Pause" << std::endl;
+        return FSMStateName::WBC;
+    }
     else if (_lowState->userCmd == UserCommand::R1 && _pause_flag)
     { 
         _pause_flag = false;
+        _pause_curr_flag = false;
         std::cout << std::endl << "WBC Resume" << std::endl;
         return FSMStateName::WBC;
     }

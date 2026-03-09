@@ -148,7 +148,7 @@ void State_Loco::_getUserCmd(){
         _vCmdBody(1) = 0;
 
     _vCmdBody(2) = 0;
-    _vCmdBody = _vCmdBody*this->_cmdSmoothes + _vCmdBodyPast*(1 - this->_cmdSmoothes);  
+    _vCmdBody = _vCmdBodyPast * this->_cmdSmoothes + _vCmdBody * (1 - this->_cmdSmoothes);
     _dYawCmd =  invNormalize(_userValue.rx, _wyawLim(0), _wyawLim(1));
     _dYawCmd = _dYawCmd;
     _dYawCmdPast = _dYawCmd;
@@ -255,6 +255,9 @@ FSMStateName State_Loco::checkChange()
     else if(_lowState->userCmd == UserCommand::SELECT){
         throw std::runtime_error("exit..");
         return FSMStateName::PASSIVE;
+    }
+    else if(_lowState->userCmd == UserCommand::R2_A){
+        return FSMStateName::AMP;
     }
     else{  
         return FSMStateName::LOCO;

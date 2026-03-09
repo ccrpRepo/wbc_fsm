@@ -20,11 +20,17 @@ enum class UserCommand
     SELECT, // exit,
     START, // fixed pose
     // F1,  // passive
-    R2, // motion pause
+    R2, // motion pause in setted refer idx
     R1, // motion continue
     R2_A, // loco_mode
-    R1_UP, //dance
+    R1_UP, //wbc
+    R1_LEFT, // wbcleft
+    R1_RIGHT, // wbcright
     L2_B, // passive
+    L2, // pause in current refer idx
+    R2_UP, //high speed mode
+    R2_DOWN, //low speed mode
+    R2_B, // back to loco from amp
     
 };
 
@@ -53,6 +59,9 @@ enum class FSMStateName{
     FIXEDDOWN,
     LOCO,
     WBC,
+    WBCleft,
+    WBCright,
+    AMP,
 };
 
 #endif  // ENUMCLASS_H
