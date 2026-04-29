@@ -118,4 +118,14 @@ namespace ArmatureConstants
 
 } // namespace ArmatureConstants
 
+namespace Limit
+{
+    constexpr double LIMIT_5020 = 25.0;
+    constexpr double LIMIT_7520_14 = 88.0;
+    constexpr double LIMIT_7520_22 = 139.0;
+    constexpr double LIMIT_4010 = 5.0;
+    constexpr double LIMIT_5010_16 = 10.0;
+
+} // namespace Limit
+
 #endif  // MATHTYPES_H
