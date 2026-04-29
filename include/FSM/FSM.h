@@ -6,6 +6,7 @@
 #include "FSM/State_Passive.h"
 #include "FSM/State_Loco.h"
 #include "FSM/State_Amp.h"
+#include "FSM/State_MJAmp.h"
 #include "FSM/State_WBC.h"
 #include "common/enumClass.h"
 #include "control/CtrlComponents.h"
@@ -17,6 +18,7 @@ struct FSMStateList{
     State_Loco *loco;
     State_WBC *wbc;
     State_AMP *amp;
+    State_MJAMP *mjamp;
     void deletePtr(){
         delete invalid;
         delete passive;
@@ -24,6 +26,7 @@ struct FSMStateList{
         delete loco;
         delete wbc;
         delete amp; 
+        delete mjamp;
     }
 };
 

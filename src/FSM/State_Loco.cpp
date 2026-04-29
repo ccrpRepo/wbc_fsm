@@ -257,7 +257,8 @@ FSMStateName State_Loco::checkChange()
         return FSMStateName::PASSIVE;
     }
     else if(_lowState->userCmd == UserCommand::R2_A){
-        return FSMStateName::AMP;
+        // return FSMStateName::AMP;
+        return FSMStateName::MJAMP;
     }
     else{  
         return FSMStateName::LOCO;
