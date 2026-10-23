@@ -51,12 +51,22 @@ IOSDK::IOSDK()
     mode_machine_ = 0;
 }
 
-void IOSDK::sendRecv(const LowlevelCmd *cmd, LowlevelState *state)
+void IOSDK::recvState(LowlevelState *state)
 {
-    // send control cmd
+    std::lock_guard<std::mutex> lock(_stateMutex);
+    *state = _lowState;
+    state->userCmd = userCmd_;
+    state->userValue = userValue_;
+}
+
+void IOSDK::sendCmd(const LowlevelCmd *cmd)
+{
     LowCmd_ dds_low_command;
     dds_low_command.mode_pr() = static_cast<uint8_t>(Mode::PR);
-    dds_low_command.mode_machine() = mode_machine_;
+    {
+        std::lock_guard<std::mutex> lock(_stateMutex);
+        dds_low_command.mode_machine() = mode_machine_;
+    }
     for (size_t i = 0; i < G1_NUM_MOTOR; i++)
     {
         
@@ -70,23 +80,7 @@ void IOSDK::sendRecv(const LowlevelCmd *cmd, LowlevelState *state)
     }
 
     dds_low_command.crc() = crc32_core((uint32_t *)&dds_low_command, (sizeof(dds_low_command) >> 2) - 1);
-    bool wrt = lowcmd_publisher_->Write(dds_low_command);
-
-    for (int i = 0; i < G1_NUM_MOTOR; i++)
-    {
-        state->motorState[i].q = _lowState.motorState[i].q;
-        state->motorState[i].dq = _lowState.motorState[i].dq;
-    }
-    for (int i = 0; i < 3; i++)
-    {
-        state->imu.quaternion[i] = _lowState.imu.quaternion[i];
-        state->imu.accelerometer[i] = _lowState.imu.accelerometer[i];
-        state->imu.gyroscope[i] = _lowState.imu.gyroscope[i];
-    }
-    state->imu.quaternion[3] = _lowState.imu.quaternion[3];
-
-    state->userCmd = userCmd_;
-    state->userValue = userValue_;
+    lowcmd_publisher_->Write(dds_low_command);
 }
 
 void IOSDK::LowStateHandler(const void *message)
@@ -97,6 +91,8 @@ void IOSDK::LowStateHandler(const void *message)
         std::cout << "[ERROR] CRC Error" << std::endl;
         return;
     }
+
+    std::lock_guard<std::mutex> lock(_stateMutex);
 
     // get motor state
     for (int i = 0; i < G1_NUM_MOTOR; ++i)
@@ -183,6 +179,10 @@ void IOSDK::LowStateHandler(const void *message)
     if (gamepad_.R2.pressed && gamepad_.B.pressed)
     {
         userCmd_ = UserCommand::R2_B;
+    }
+    if (gamepad_.R2.pressed && gamepad_.Y.pressed)
+    {
+        userCmd_ = UserCommand::R2_Y;
     }
 
     userValue_.lx = -gamepad_.lx;

@@ -31,6 +31,7 @@ enum class UserCommand
     R2_UP, //high speed mode
     R2_DOWN, //low speed mode
     R2_B, // back to loco from amp
+    R2_Y, // back to amp from mjamp
     
 };
 

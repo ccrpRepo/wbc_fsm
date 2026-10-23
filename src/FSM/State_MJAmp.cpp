@@ -325,8 +325,11 @@ FSMStateName State_MJAMP::checkChange()
         }
         return FSMStateName::MJAMP;
     }
-     else if(_lowState->userCmd == UserCommand::R2_B){
+    else if(_lowState->userCmd == UserCommand::R2_B){
         return FSMStateName::LOCO;
+    }
+    else if(_lowState->userCmd == UserCommand::R2_Y){
+        return FSMStateName::AMP;
     }
     else
     {

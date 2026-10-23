@@ -3,6 +3,7 @@
 
 #include "interface/IOInterface.h"
 #include <string>
+#include <mutex>
 #include "common/gamepad.hpp"
 #include <unitree/robot/channel/channel_publisher.hpp>
 #include <unitree/robot/channel/channel_subscriber.hpp>
@@ -39,13 +40,15 @@ private:
     int counter_;
     UserCommand userCmd_;
     UserValue userValue_;
+    std::mutex _stateMutex;
 
     void LowStateHandler(const void *message);
 
 public:
     IOSDK(/* args */);
     ~IOSDK(){}
-    void sendRecv(const LowlevelCmd *cmd, LowlevelState *state);
+    void recvState(LowlevelState *state) override;
+    void sendCmd(const LowlevelCmd *cmd) override;
 };
 
 

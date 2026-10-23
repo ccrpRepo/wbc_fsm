@@ -31,11 +31,11 @@ struct IMU
 
     IMU(){
         for(int i = 0; i < 3; i++){
-            quaternion[i] = 0;
+            quaternion[i+1] = 0;
             gyroscope[i] = 0;
             accelerometer[i] = 0;
         }
-        quaternion[3] = 0;
+        quaternion[0] = 1;
     }
 
     RotMat getRotMat(){

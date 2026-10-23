@@ -30,8 +30,12 @@ public:
     bool exitFlag;
     CtrlPlatform ctrlPlatform;
 
-    void sendRecv(){
-        ioInter->sendRecv(lowCmd, lowState);  
+    void recvState(){
+        ioInter->recvState(lowState);
+    }
+
+    void sendCmd(){
+        ioInter->sendCmd(lowCmd);
     }
 
 

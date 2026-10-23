@@ -31,7 +31,7 @@ void FSM::run(){
     try{
         _startTime = getSystemTime();  
         
-        _ctrlComp->sendRecv(); 
+        _ctrlComp->recvState();
 
         if(_mode == FSMMode::NORMAL){  
             _currentState->run();  
@@ -50,7 +50,8 @@ void FSM::run(){
             _mode = FSMMode::NORMAL; 
             _currentState->run(); 
         }
-
+        
+        _ctrlComp->sendCmd();
         absoluteWait(_startTime, (long long)(_ctrlComp->dt * 1000000));  
     }catch (const std::exception& e) {
         std::cerr << std::endl << "Caught exception: " << e.what() << std::endl;

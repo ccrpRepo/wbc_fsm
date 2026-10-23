@@ -260,6 +260,10 @@ FSMStateName State_Loco::checkChange()
         // return FSMStateName::AMP;
         return FSMStateName::MJAMP;
     }
+    else if(_lowState->userCmd == UserCommand::R2_Y){
+        // return FSMStateName::AMP;
+        return FSMStateName::AMP;
+    }
     else{  
         return FSMStateName::LOCO;
     }
